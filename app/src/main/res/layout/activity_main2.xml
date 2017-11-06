@@ -15,11 +15,12 @@
         <EditText
             android:id="@+id/displayView"
             android:layout_weight="9"
+            android:background="#424242"
+
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Hello World!"
             android:gravity="top"
-            android:background="#424242"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent" />

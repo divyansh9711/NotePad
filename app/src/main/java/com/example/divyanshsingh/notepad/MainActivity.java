@@ -1,12 +1,15 @@
 package com.example.divyanshsingh.notepad;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,119 +20,38 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText readingView;
-    TextView appRestartVIew;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        saveTextFile(readingView.getText().toString());
-    }
+    private EditText fileName = null;
+    private Button openButton = null;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        readingView.setText(getTextFile());
-    }
-
-    private static final String DATA_FILE = "my_file2";
-
-    private int times = 0;
-    private static final String NUMBER_OF_TIMES = "NUMBER_OF_TIMES";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
-        readingView = (EditText) findViewById(R.id.displayView);
-        appRestartVIew = (TextView) findViewById(R.id.run);
-
-        int defaultValue = 0;
-
-        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
-
-        times = sharedPreferences.getInt(NUMBER_OF_TIMES, defaultValue);
-        times++;
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(NUMBER_OF_TIMES, times);
-        editor.commit();
-
-        appRestartVIew.setText(String.valueOf(times));
+        fileName = findViewById(R.id.file_name);
+        openButton = (Button) findViewById(R.id.mButton);
 
 
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-                saveTextFile(readingView.getText().toString());
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(1);
-
-        return true;
-    }
-
-    public void saveTextFile(String content) {
-
-        FileOutputStream fileOutputStream = null;
-
-        try {
-            fileOutputStream = openFileOutput(DATA_FILE, Context.MODE_PRIVATE);
-            fileOutputStream.write(content.getBytes());
-        } catch (FileNotFoundException e) {
-            Log.e("FILE", "Could'nt find that file ");
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e("FILE", "IO exception");
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileOutputStream != null) {
-                    fileOutputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        openButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(view.getContext(),SecondActivity.class);
+                final String file = fileName.getText().toString();
+                i.putExtra("ID",file);
+                startActivity(i);
             }
-        }
+        });
+
+
+
     }
 
 
-    public String getTextFile() {
-        FileInputStream fileInputStream = null;
-        String fileData = null;
 
-        try {
-            fileInputStream = openFileInput(DATA_FILE);
-            int size = fileInputStream.available();
-            byte[] buffer = new byte[size];
-            fileInputStream.read(buffer);
-            fileInputStream.close();
-            fileData = new String(buffer, "UTF-8");
-        } catch (FileNotFoundException e) {
-            Log.e("FILE", "Could'nt find that file ");
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.e("FILE", "IO exception");
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return fileData;
-    }
+
 }
 
 
